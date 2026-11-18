@@ -1,9 +1,5 @@
-import { Text, View } from 'react-native';
+import StatusScreen from '../src/modules/attendance/screens/StatusScreen';
 
 export default function Status() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text testID="status-placeholder">proximamente</Text>
-    </View>
-  );
+  return <StatusScreen />;
 }

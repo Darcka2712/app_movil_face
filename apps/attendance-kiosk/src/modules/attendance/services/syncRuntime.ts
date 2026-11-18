@@ -13,11 +13,13 @@ import {
   type Connectivity,
 } from '@face/offline-sync';
 import { getHttpClient, whenDeviceKeyReady } from '../../../config/client';
+import { loadStatusSummary, type StatusSummary } from './statusSummary';
 
 export interface SyncRuntime {
   engine: SyncEngine;
   database: Database;
   getPendingCount(): Promise<number>;
+  getStatusSummary(): Promise<StatusSummary>;
   syncNow(): Promise<void>;
 }
 
@@ -43,6 +45,7 @@ export function createSyncRuntime(opts: SyncRuntimeOptions): SyncRuntime {
     engine,
     database: opts.database,
     getPendingCount: () => engine.getPendingCount(),
+    getStatusSummary: () => loadStatusSummary(repo),
     async syncNow(): Promise<void> {
       if (!(await opts.connectivity.isOnline())) return;
       try {
