@@ -115,7 +115,7 @@ describe('HttpClient', () => {
     global.fetch = mockFetch as unknown as typeof fetch;
 
     const client = new HttpClient({ baseUrl: 'http://x/api/v1', getDeviceKey: () => 'dk_test' });
-    await client.post('/device/asistencia/entrada', { codigo: 'EMP001' }, { device: true });
+    await client.post('/device/entrada', { codigo: 'EMP001' }, { device: true });
 
     const [, init] = mockFetch.mock.calls[0] as [string, RequestInit];
     expect(init.method).toBe('POST');

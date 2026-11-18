@@ -10,16 +10,18 @@ Failure: { success: false, error?, message, timestamp? }
 | Method | Path | Auth | Notes |
 |--------|------|------|-------|
 | POST | /usuarios/login | none (CSRF public) | body {user,password} → data.token (access). Cookies also set. |
-| POST | /usuarios/refresh | cookie refresh_token only | see ADR-012 |
-| POST | /usuarios/logout | Bearer or cookie | clears cookies server-side |
+| POST | /usuarios/refresh | cookie refresh_token only + CSRF header/cookie (not in CSRF PUBLIC_PATHS) | see ADR-012 |
+| POST | /usuarios/logout | Bearer or cookie | clears cookies server-side; CSRF public |
 | GET | /usuarios/me | Bearer | data = LoginUser shape |
 
 ## Device (X-Device-Key, CSRF bypassed)
 | Method | Path | Permission | Body |
 |--------|------|------------|------|
 | GET | /device/empleados | empleados READ | — |
-| POST | /device/asistencia/entrada | asistencia CREATE | XOR id_empleado|codigo + optional timestamp |
-| POST | /device/asistencia/salida | asistencia CREATE | same |
+| POST | /device/entrada | asistencia CREATE | XOR id_empleado|codigo + optional timestamp |
+| POST | /device/salida | asistencia CREATE | same |
+
+Note: routes are flat under `/device/*` (asistenciaRouter mounted without subpath). Backend swagger comments saying `/device/asistencia/*` are stale.
 
 Device key provisioned by admin: POST /api/v1/dispositivos (web JWT).
 No self-registration endpoint.

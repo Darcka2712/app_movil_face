@@ -19,7 +19,7 @@
 - Logout: `POST /api/v1/usuarios/logout`
 - Me: `GET /api/v1/usuarios/me` Bearer or access_token cookie
 - Device auth: header `X-Device-Key`; routes `/api/v1/device/*`; CSRF bypassed for this header+path
-- Device endpoints used Fase 2: `GET /device/empleados`, `POST /device/asistencia/entrada|salida`
+- Device endpoints used Fase 2: `GET /device/empleados`, `POST /device/entrada|salida` (flat paths — asistenciaRouter mounted without subpath)
 - Device DTO: XOR `id_empleado` ↔ `codigo`; optional `timestamp` ISO
 - Kiosk identity = admin-provisioned X-Device-Key (ADR-011); **no self-registration endpoint exists**
 - JWT refresh cookie-only = **mobile gap**: document in ADR; do NOT invent body-refresh contract; kiosk path does not need JWT (uses device key)
@@ -386,7 +386,7 @@ describe('HttpClient', () => {
     global.fetch = mockFetch;
 
     const client = new HttpClient({ baseUrl: 'http://x/api/v1' });
-    await client.post('/device/asistencia/entrada', { codigo: 'EMP001' }, { device: true });
+    await client.post('/device/entrada', { codigo: 'EMP001' }, { device: true });
 
     const [, init] = mockFetch.mock.calls[0] as [string, RequestInit];
     expect(init.method).toBe('POST');
@@ -852,8 +852,8 @@ Failure: { success: false, error?, message, timestamp? }
 | Method | Path | Permission | Body |
 |--------|------|------------|------|
 | GET | /device/empleados | empleados READ | — |
-| POST | /device/asistencia/entrada | asistencia CREATE | XOR id_empleado|codigo + optional timestamp |
-| POST | /device/asistencia/salida | asistencia CREATE | same |
+| POST | /device/entrada | asistencia CREATE | XOR id_empleado|codigo + optional timestamp |
+| POST | /device/salida | asistencia CREATE | same |
 
 Device key provisioned by admin: POST /api/v1/dispositivos (web JWT).
 No self-registration endpoint.

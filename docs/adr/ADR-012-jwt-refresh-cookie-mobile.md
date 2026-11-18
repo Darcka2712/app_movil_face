@@ -11,6 +11,8 @@ returns new tokens via Set-Cookie; response body has no token field.
 
 React Native / Expo fetch does not persist httpOnly cookies like a browser.
 Storing refresh token from Set-Cookie is unreliable without a cookie jar.
+Additionally, `/usuarios/refresh` is NOT in CSRF PUBLIC_PATHS — a mobile
+client would also need the CSRF cookie/header pair, which RN does not keep.
 
 ## Decision
 1. Attendance Kiosk MVP uses X-Device-Key only (ADR-011) — no JWT refresh needed.
