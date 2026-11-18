@@ -16,6 +16,7 @@ export interface AttendanceRepository {
   insert(event: AttendanceEvent): Promise<void>;
   getByEventId(eventId: string): Promise<AttendanceEvent | null>;
   listByStatus(status: SyncStatus, limit: number): Promise<AttendanceEvent[]>;
+  findForEmployeeDay(employeeId: number, dayKey: string): Promise<AttendanceEvent[]>;
   updateStatus(
     eventId: string,
     status: SyncStatus,

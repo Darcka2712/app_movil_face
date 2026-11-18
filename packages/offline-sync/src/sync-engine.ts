@@ -37,6 +37,13 @@ export class SyncEngine {
     });
   }
 
+  async findForEmployeeDay(
+    employeeId: number,
+    dayKey: string,
+  ): Promise<AttendanceEvent[]> {
+    return this.repo.findForEmployeeDay(employeeId, dayKey);
+  }
+
   async syncPending(limit = 50): Promise<SyncResult[]> {
     if (this.inFlight) return [];
     this.inFlight = true;

@@ -8,6 +8,7 @@ export type {
   SyncTransport,
 } from './types';
 export { createAttendanceRepository } from './attendance-repository';
+export { localDateKey } from './local-date';
 export { createSyncQueue } from './sync-queue';
 export { computeBackoffMs } from './backoff';
 export { SyncEngine } from './sync-engine';

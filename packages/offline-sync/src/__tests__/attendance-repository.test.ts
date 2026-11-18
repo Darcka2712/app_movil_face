@@ -1,6 +1,7 @@
 import { createMemoryDatabase } from '@face/database';
 import type { Database } from '@face/database';
 import { createAttendanceRepository } from '../attendance-repository';
+import { localDateKey } from '../local-date';
 import type { AttendanceEvent } from '../types';
 
 function makeEvent(overrides: Partial<AttendanceEvent> = {}): AttendanceEvent {
@@ -84,6 +85,21 @@ describe('AttendanceRepository', () => {
     expect(synced?.syncStatus).toBe('SYNCED');
     expect(synced?.attemptCount).toBe(2);
     expect(synced?.lastError).toBe('net');
+  });
+
+  it('findForEmployeeDay filters by employee and local day', async () => {
+    const { repo } = await setup();
+    const day = new Date(2026, 10, 18, 10, 0, 0);
+    const prevDay = new Date(2026, 10, 17, 23, 30, 0);
+    await repo.insert(makeEvent({ eventId: 'a', employeeId: 42, occurredAt: day.toISOString() }));
+    await repo.insert(makeEvent({ eventId: 'b', employeeId: 43, occurredAt: day.toISOString() }));
+    await repo.insert(
+      makeEvent({ eventId: 'c', employeeId: 42, occurredAt: prevDay.toISOString() }),
+    );
+
+    const events = await repo.findForEmployeeDay(42, localDateKey(day));
+    expect(events.map((e) => e.eventId)).toEqual(['a']);
+    await expect(repo.findForEmployeeDay(99, localDateKey(day))).resolves.toEqual([]);
   });
 
   it('countByStatus counts only matching status', async () => {

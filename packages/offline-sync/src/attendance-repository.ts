@@ -1,6 +1,7 @@
 import type { Database } from '@face/database';
 import type { SyncStatus } from '@face/shared-types';
 import type { AttendanceEvent, AttendanceRepository } from './types';
+import { localDateKey } from './local-date';
 
 interface AttendanceRow {
   event_id: string;
@@ -67,6 +68,22 @@ export function createAttendanceRepository(db: Database): AttendanceRepository {
       if (patch?.attemptCount !== undefined) updates.attempt_count = patch.attemptCount;
       if (patch?.lastError !== undefined) updates.last_error = patch.lastError;
       await db.update('attendance_events', { event_id: eventId }, updates);
+    },
+
+    async findForEmployeeDay(
+      employeeId: number,
+      dayKey: string,
+    ): Promise<AttendanceEvent[]> {
+      // shortcut: JS filter over all rows, no SQL date predicates —
+      // kiosk memory DB stays small, upgrade if events grow large
+      const rows = await db.select<AttendanceRow>('attendance_events');
+      return rows
+        .filter(
+          (row) =>
+            row.employee_id === employeeId &&
+            localDateKey(new Date(row.occurred_at)) === dayKey,
+        )
+        .map(toEvent);
     },
 
     async countByStatus(status: SyncStatus): Promise<number> {
