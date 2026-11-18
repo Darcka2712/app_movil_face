@@ -16,6 +16,7 @@ import { getHttpClient, whenDeviceKeyReady } from '../../../config/client';
 
 export interface SyncRuntime {
   engine: SyncEngine;
+  database: Database;
   getPendingCount(): Promise<number>;
   syncNow(): Promise<void>;
 }
@@ -40,6 +41,7 @@ export function createSyncRuntime(opts: SyncRuntimeOptions): SyncRuntime {
   );
   return {
     engine,
+    database: opts.database,
     getPendingCount: () => engine.getPendingCount(),
     async syncNow(): Promise<void> {
       if (!(await opts.connectivity.isOnline())) return;
