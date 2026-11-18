@@ -305,6 +305,9 @@ importers:
 
   packages/offline-sync:
     dependencies:
+      '@face/api-client':
+        specifier: workspace:*
+        version: link:../api-client
       '@face/database':
         specifier: workspace:*
         version: link:../database
@@ -6442,9 +6445,7 @@ snapshots:
       metro-runtime: 0.87.1
     transitivePeerDependencies:
       - '@babel/core'
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   '@react-native/normalize-colors@0.88.1': {}
 

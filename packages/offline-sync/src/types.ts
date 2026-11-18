@@ -37,3 +37,22 @@ export interface SyncQueue {
   release(eventId: string): Promise<void>;
   remove(eventId: string): Promise<void>;
 }
+
+export type NewAttendanceEvent = Omit<
+  AttendanceEvent,
+  'syncStatus' | 'attemptCount' | 'eventId'
+> & {
+  eventId?: string;
+};
+
+export interface SyncResult {
+  eventId: string;
+  status: 'SYNCED' | 'DUPLICATE' | 'REJECTED';
+  serverRecordId?: number;
+  errorCode?: string;
+  message?: string;
+}
+
+export interface SyncTransport {
+  sendBatch(events: AttendanceEvent[]): Promise<SyncResult[]>;
+}

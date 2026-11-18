@@ -14,6 +14,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@face/api-client": "workspace:*",
     "@face/database": "workspace:*",
     "@face/shared-types": "workspace:*"
   },
