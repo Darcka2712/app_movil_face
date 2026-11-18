@@ -1,3 +1,4 @@
+import type { ScannerService } from '@face/scanner';
 import { router } from 'expo-router';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -7,6 +8,7 @@ import {
   whenDeviceKeyReady,
 } from '../../../config/client';
 import { getEnv } from '../../../config/env';
+import { createCameraScanner } from '../scanner/createCameraScanner';
 import { getKioskAttendanceRuntime } from '../services/attendanceRuntime';
 import { resultMessage, successMessage } from '../services/resultMessages';
 import { getKioskSyncRuntime } from '../services/syncRuntime';
@@ -17,6 +19,8 @@ type ResultState =
   | null;
 
 const ENQUEUE_FALLBACK = 'No se pudo guardar — intente de nuevo';
+const CAMERA_FORMATS = ['qr', 'code128', 'ean13'];
+const SCAN_DEDUPE_MS = 1500;
 
 export default function HomeScreen() {
   const env = getEnv();
@@ -29,6 +33,7 @@ export default function HomeScreen() {
   const [result, setResult] = useState<ResultState>(null);
   const [pendingCount, setPendingCount] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [scanner, setScanner] = useState<ScannerService | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -47,6 +52,24 @@ export default function HomeScreen() {
     });
     return () => {
       cancelled = true;
+    };
+  }, []);
+
+  // Camera unavailable until expo-camera ships (P6 device): createCameraScanner resolves null → manual entry only.
+  useEffect(() => {
+    let cancelled = false;
+    let unsubscribe: (() => void) | null = null;
+    let active: ScannerService | null = null;
+    void createCameraScanner().then((service) => {
+      if (cancelled || !service) return;
+      active = service;
+      unsubscribe = service.subscribe((scan) => setCodigo(scan.value));
+      setScanner(service);
+    });
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+      if (active) void active.stop().catch(() => {});
     };
   }, []);
 
@@ -77,6 +100,13 @@ export default function HomeScreen() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const onScan = () => {
+    if (!scanner) return;
+    void scanner
+      .start({ acceptedFormats: CAMERA_FORMATS, duplicateWindowMs: SCAN_DEDUPE_MS })
+      .catch(() => {});
   };
 
   return (
@@ -118,6 +148,8 @@ export default function HomeScreen() {
           {result.text}
         </Text>
       )}
+
+      {scanner && <Button testID="scan" title="Escanear" onPress={onScan} />}
 
       <View style={styles.statusRow}>
         <Button testID="status-link" title="Estado" onPress={() => router.push('/status')} />
