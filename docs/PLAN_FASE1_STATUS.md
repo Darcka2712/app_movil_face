@@ -11,5 +11,6 @@
 - [x] ADR-011 X-Device-Key MVP
 - [ ] Device APK on real tablet (pending hardware)
 - [ ] Fase 2: api-client/auth/tenant/device packages
+- [ ] CI pipeline — deferred: not in Fase 1 plan tasks; architecture table lists CI as Fase 1 deliverable. Schedule as follow-up before claiming architecture parity.
 
 Commands verified: pnpm install, pnpm doctor, expo config x3.

@@ -6,7 +6,7 @@
 
 **Architecture:** pnpm workspaces root at `app-movil/`. Three independent Expo SDK 58 apps under `apps/*`, each with own `applicationId` and `app.config.ts`. Shared code only under `packages/*` via public `src/index.ts` exports. Backend auth untouched; device identity = X-Device-Key pre-provisioned by admin (decision D1 approved).
 
-**Tech Stack:** Expo SDK 58.0.x, React Native 0.88.x, React 19.x, TypeScript 5.x strict, pnpm 10.x workspaces, Turborepo 2.x, Jest 29, ESLint 9 flat config, expo-router 6.x.
+**Tech Stack:** Expo SDK 58.0.x, React Native 0.88.x, React 19.x, TypeScript 5.x strict, pnpm 10.x workspaces, Turborepo 2.x, Jest 29 (shared-types) / Jest 30 (Expo apps via jest-expo ~58), ESLint 9 flat config, expo-router 6.x.
 
 ## Global Constraints
 
