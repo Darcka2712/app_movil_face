@@ -13,6 +13,9 @@
   "dependencies": {
     "@face/api-client": "workspace:*",
     "@face/auth": "workspace:*",
+    "@face/database": "workspace:*",
+    "@face/offline-sync": "workspace:*",
+    "@face/scanner": "workspace:*",
     "@face/shared-types": "workspace:*",
     "@tanstack/react-query": "^5.90.0",
     "@expo/metro-runtime": "~58.0.17",

@@ -29,6 +29,15 @@ importers:
       '@face/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@face/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@face/offline-sync':
+        specifier: workspace:*
+        version: link:../../packages/offline-sync
+      '@face/scanner':
+        specifier: workspace:*
+        version: link:../../packages/scanner
       '@face/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
