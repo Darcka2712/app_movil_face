@@ -4,7 +4,8 @@
 - [x] @face/database schema + migrations + MemoryDatabase + Expo adapter
 - [x] @face/offline-sync repository + queue + backoff
 - [x] SyncEngine + ProposedBatchTransport (mock) + SingleEventTransport
-- [x] Connectivity wrapper + kiosk wiring (pending counter)
+- [x] Connectivity wrapper + kiosk wiring (pending counter) — runtime is Memory-only; events non-durable across restarts until Expo SQLite swap
+- [ ] Expo SQLite + NetInfo wiring (swap createMemoryDatabase/createMemoryConnectivity → createExpoDatabase/createNetInfoConnectivity) — needs P6 device; events currently non-durable across restarts
 - [x] ADR-013 batch contract proposal
 - [ ] Live batch sync (blocked on backend P7)
 - [ ] Camera adapter (expo-camera) — needs device

@@ -1,4 +1,4 @@
-import { HttpClient, HttpError } from '@face/api-client';
+import { HttpClient, HttpError, NetworkError } from '@face/api-client';
 import type { AttendanceEvent, SyncResult, SyncTransport } from './types';
 
 export function createProposedBatchTransport(
@@ -25,7 +25,9 @@ export function createProposedBatchTransport(
   };
 }
 
-// shortcut: no server-side eventId dedupe — timeout retry may duplicate;
+// shortcut: no server-side eventId dedupe — timeout/5xx retry may duplicate;
+// NetworkError mid-batch returns partial results (stops, no throw), so only the
+// in-flight event can be lost/duplicated; unattempted events are rescheduled by the engine;
 // upgrade to createProposedBatchTransport when backend P7 (/device/sync) lands
 export function createSingleEventTransport(
   client: HttpClient,
@@ -54,6 +56,7 @@ export function createSingleEventTransport(
             });
             continue;
           }
+          if (err instanceof NetworkError) return results;
           throw err;
         }
       }

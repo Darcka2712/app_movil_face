@@ -1,4 +1,4 @@
-import { HttpClient, NetworkError } from '@face/api-client';
+import { HttpClient } from '@face/api-client';
 import { createProposedBatchTransport, createSingleEventTransport } from '../transports';
 import type { AttendanceEvent } from '../types';
 
@@ -157,10 +157,27 @@ describe('createSingleEventTransport', () => {
     ]);
   });
 
-  it('NetworkError propagates to engine (rethrow)', async () => {
+  it('NetworkError on first event → returns [], does not throw', async () => {
     global.fetch = jest.fn().mockRejectedValue(new TypeError('Failed to fetch')) as unknown as typeof fetch;
     const transport = createSingleEventTransport(client(), 'dev_1');
 
-    await expect(transport.sendBatch([makeEvent()])).rejects.toBeInstanceOf(NetworkError);
+    await expect(transport.sendBatch([makeEvent()])).resolves.toEqual([]);
+  });
+
+  it('NetworkError mid-batch → stops, returns partial results (first SYNCED), does not throw', async () => {
+    const mockFetch = jest
+      .fn()
+      .mockResolvedValueOnce(jsonResponse(201, { success: true, data: { id: 1 } }))
+      .mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    global.fetch = mockFetch as unknown as typeof fetch;
+    const transport = createSingleEventTransport(client(), 'dev_1');
+
+    const results = await transport.sendBatch([
+      makeEvent({ eventId: 'e1' }),
+      makeEvent({ eventId: 'e2' }),
+    ]);
+
+    expect(results).toEqual([{ eventId: 'e1', status: 'SYNCED' }]);
+    expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 });
