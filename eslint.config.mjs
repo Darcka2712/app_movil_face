@@ -20,7 +20,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.config.js'],
+    files: ['**/*.config.js', '**/*.config.cjs'],
     languageOptions: { globals: { module: 'readonly', exports: 'readonly' } },
   },
 );

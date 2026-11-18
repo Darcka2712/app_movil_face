@@ -1,5 +1,5 @@
 import { HttpClient } from '../client';
-import { HttpError, NetworkError } from '../errors';
+import { NetworkError } from '../errors';
 
 const okEnvelope = {
   success: true,
