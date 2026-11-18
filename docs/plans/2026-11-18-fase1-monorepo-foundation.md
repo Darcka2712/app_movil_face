@@ -453,23 +453,24 @@ git commit -m "feat(shared-types): device and api response types"
   },
   "dependencies": {
     "@face/shared-types": "workspace:*",
+    "@expo/metro-runtime": "~58.0.17",
     "expo": "~58.0.25",
-    "expo-constants": "~18.0.8",
-    "expo-linking": "~8.0.7",
-    "expo-router": "~6.0.23",
-    "expo-status-bar": "~3.0.8",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-native": "0.83.0",
-    "react-native-safe-area-context": "~5.6.0",
-    "react-native-screens": "~4.16.0"
+    "expo-constants": "~58.0.16",
+    "expo-linking": "~58.0.17",
+    "expo-router": "~58.0.32",
+    "expo-status-bar": "~58.0.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "~5.11.1",
+    "react-native-screens": "~4.30.1"
   },
   "devDependencies": {
-    "@babel/core": "7.28.4",
-    "@types/jest": "29.5.14",
-    "@types/react": "~19.1.0",
+    "@babel/core": "^7.29.7",
+    "@types/jest": "^30.0.0",
+    "@types/react": "~19.3.0",
     "eslint": "9.39.1",
-    "jest": "29.7.0",
+    "jest": "~30.5.2",
     "jest-expo": "~58.0.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.46.2"
@@ -477,7 +478,7 @@ git commit -m "feat(shared-types): device and api response types"
 }
 ```
 
-Note: exact RN/expo-router patch versions must be re-pinned with `npx expo install --fix` after first install (Step 6). Treat `~` ranges as seeds; lockfile is source of truth.
+Note: exact RN/expo-router patch versions re-pinned with SDK 58 set during execution (plan seeds corrected). Lockfile is source of truth.
 
 - [ ] **Step 2: Write `app.config.ts`**
 
@@ -764,23 +765,24 @@ Replace name/scripts deps block name only:
   },
   "dependencies": {
     "@face/shared-types": "workspace:*",
+    "@expo/metro-runtime": "~58.0.17",
     "expo": "~58.0.25",
-    "expo-constants": "~18.0.8",
-    "expo-linking": "~8.0.7",
-    "expo-router": "~6.0.23",
-    "expo-status-bar": "~3.0.8",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-native": "0.83.0",
-    "react-native-safe-area-context": "~5.6.0",
-    "react-native-screens": "~4.16.0"
+    "expo-constants": "~58.0.16",
+    "expo-linking": "~58.0.17",
+    "expo-router": "~58.0.32",
+    "expo-status-bar": "~58.0.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "~5.11.1",
+    "react-native-screens": "~4.30.1"
   },
   "devDependencies": {
-    "@babel/core": "7.28.4",
-    "@types/jest": "29.5.14",
-    "@types/react": "~19.1.0",
+    "@babel/core": "^7.29.7",
+    "@types/jest": "^30.0.0",
+    "@types/react": "~19.3.0",
     "eslint": "9.39.1",
-    "jest": "29.7.0",
+    "jest": "~30.5.2",
     "jest-expo": "~58.0.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.46.2"
