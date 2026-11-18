@@ -1,7 +1,11 @@
 import { Text, View, StyleSheet } from 'react-native';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { getEnv } from '../src/config/env';
-import { getDeviceKeyProvisioned, subscribeDeviceKey } from '../src/config/client';
+import {
+  getDeviceKeyProvisioned,
+  subscribeDeviceKey,
+  whenDeviceKeyReady,
+} from '../src/config/client';
 import { getKioskSyncRuntime } from '../src/modules/attendance/services/syncRuntime';
 
 export default function Home() {
@@ -15,6 +19,7 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
+      await whenDeviceKeyReady();
       const runtime = await getKioskSyncRuntime();
       const refresh = async () => {
         const count = await runtime.getPendingCount();

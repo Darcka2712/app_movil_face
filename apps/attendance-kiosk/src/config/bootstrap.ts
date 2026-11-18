@@ -1,4 +1,5 @@
 import type { SecureStorage } from '@face/auth';
+import { markDeviceKeyReady } from './client';
 
 export interface BootstrapDeps {
   createStorage: () => Promise<SecureStorage>;
@@ -25,5 +26,8 @@ export async function bootstrapSecureStorage(
     return 'ok';
   } catch {
     return 'fallback';
+  } finally {
+    // release sync gates on both ok and fallback paths
+    markDeviceKeyReady();
   }
 }

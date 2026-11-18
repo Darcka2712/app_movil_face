@@ -3,7 +3,11 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { bootstrapSecureStorage } from '../src/config/bootstrap';
-import { hydrateDeviceKey, injectStorage } from '../src/config/client';
+import {
+  hydrateDeviceKey,
+  injectStorage,
+  whenDeviceKeyReady,
+} from '../src/config/client';
 import { AppProviders } from '../src/providers/AppProviders';
 import { getKioskSyncRuntime } from '../src/modules/attendance/services/syncRuntime';
 
@@ -20,6 +24,7 @@ export default function RootLayout() {
         () => cancelled,
       );
       if (cancelled) return;
+      await whenDeviceKeyReady();
       const runtime = await getKioskSyncRuntime();
       if (cancelled) return;
       await runtime.syncNow();

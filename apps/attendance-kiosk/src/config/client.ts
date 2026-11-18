@@ -6,6 +6,18 @@ let credentials: CredentialStore | null = null;
 let client: HttpClient | null = null;
 let deviceKeyCache: string | null = null;
 const listeners = new Set<() => void>();
+let markDeviceKeyReadyFn: () => void = () => {};
+const deviceKeyReady = new Promise<void>((resolve) => {
+  markDeviceKeyReadyFn = resolve;
+});
+
+export function whenDeviceKeyReady(): Promise<void> {
+  return deviceKeyReady;
+}
+
+export function markDeviceKeyReady(): void {
+  markDeviceKeyReadyFn();
+}
 
 export function injectStorage(instance: SecureStorage): void {
   credentials = new CredentialStore(instance);

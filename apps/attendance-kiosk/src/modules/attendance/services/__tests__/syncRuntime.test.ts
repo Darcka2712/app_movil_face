@@ -1,7 +1,12 @@
 import { HttpClient } from '@face/api-client';
 import { createMemoryDatabase, migrate, type Database } from '@face/database';
 import { createMemoryConnectivity } from '@face/offline-sync';
-import { createSyncRuntime, type SyncRuntime } from '../syncRuntime';
+import { markDeviceKeyReady } from '../../../../config/client';
+import {
+  createSyncRuntime,
+  getKioskSyncRuntime,
+  type SyncRuntime,
+} from '../syncRuntime';
 
 const BASE_URL = 'http://localhost:3002/api/v1';
 
@@ -90,5 +95,35 @@ describe('createSyncRuntime', () => {
     await runtime.engine.enqueue(newEvent());
     await expect(runtime.syncNow()).resolves.toBeUndefined();
     await expect(runtime.getPendingCount()).resolves.toBe(1);
+  });
+});
+
+describe('getKioskSyncRuntime device key gate', () => {
+  it('does not resolve (so syncNow cannot run) before device key ready', async () => {
+    const prevEnv = process.env.EXPO_PUBLIC_ENVIRONMENT;
+    const prevUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
+    process.env.EXPO_PUBLIC_ENVIRONMENT = 'development';
+    process.env.EXPO_PUBLIC_API_BASE_URL = BASE_URL;
+    try {
+      let resolved = false;
+      const runtimePromise = getKioskSyncRuntime().then((runtime) => {
+        resolved = true;
+        return runtime;
+      });
+
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(resolved).toBe(false);
+
+      markDeviceKeyReady();
+      const runtime = await runtimePromise;
+      expect(resolved).toBe(true);
+      expect(runtime.syncNow).toEqual(expect.any(Function));
+    } finally {
+      if (prevEnv === undefined) delete process.env.EXPO_PUBLIC_ENVIRONMENT;
+      else process.env.EXPO_PUBLIC_ENVIRONMENT = prevEnv;
+      if (prevUrl === undefined) delete process.env.EXPO_PUBLIC_API_BASE_URL;
+      else process.env.EXPO_PUBLIC_API_BASE_URL = prevUrl;
+    }
   });
 });

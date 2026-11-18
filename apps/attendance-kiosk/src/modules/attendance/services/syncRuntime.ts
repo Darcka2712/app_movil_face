@@ -12,7 +12,7 @@ import {
   createSyncQueue,
   type Connectivity,
 } from '@face/offline-sync';
-import { getHttpClient } from '../../../config/client';
+import { getHttpClient, whenDeviceKeyReady } from '../../../config/client';
 
 export interface SyncRuntime {
   engine: SyncEngine;
@@ -61,6 +61,7 @@ let runtimePromise: Promise<SyncRuntime> | null = null;
 export function getKioskSyncRuntime(): Promise<SyncRuntime> {
   if (!runtimePromise) {
     runtimePromise = (async () => {
+      await whenDeviceKeyReady();
       const database = createMemoryDatabase();
       await migrate(database);
       return createSyncRuntime({
