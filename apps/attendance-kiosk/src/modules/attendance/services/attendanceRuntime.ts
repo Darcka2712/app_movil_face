@@ -25,10 +25,15 @@ export function getKioskAttendanceRuntime(): Promise<AttendanceRuntime> {
     runtimePromise = (async () => {
       await whenDeviceKeyReady();
       const sync = await getKioskSyncRuntime();
-      // best-effort boot sync: offline or failed refresh stays empty until next launch
+      // best-effort boot sync: offline boot stays empty until refreshEmployeeCache
       void syncEmployeeCache(getHttpClient(), sync.database).catch(() => {});
       return createAttendanceRuntime(sync);
     })();
   }
   return runtimePromise;
+}
+
+export async function refreshEmployeeCache(): Promise<number> {
+  const sync = await getKioskSyncRuntime();
+  return syncEmployeeCache(getHttpClient(), sync.database);
 }

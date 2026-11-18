@@ -1,12 +1,15 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import { refreshEmployeeCache } from '../services/attendanceRuntime';
 import { getKioskSyncRuntime } from '../services/syncRuntime';
 import type { StatusSummary } from '../services/statusSummary';
 
 export default function StatusScreen() {
   const [summary, setSummary] = useState<StatusSummary | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [employeeMsg, setEmployeeMsg] = useState<string | null>(null);
+  const [refreshingEmployees, setRefreshingEmployees] = useState(false);
 
   const refresh = async () => {
     try {
@@ -35,6 +38,19 @@ export default function StatusScreen() {
     }
   };
 
+  const onRefreshEmployees = async () => {
+    if (refreshingEmployees) return;
+    setRefreshingEmployees(true);
+    try {
+      const count = await refreshEmployeeCache();
+      setEmployeeMsg(`Empleados actualizados: ${count}`);
+    } catch {
+      setEmployeeMsg('Sin conexión — intente luego');
+    } finally {
+      setRefreshingEmployees(false);
+    }
+  };
+
   const rejected = summary?.rejected ?? 0;
 
   return (
@@ -54,12 +70,24 @@ export default function StatusScreen() {
         Requiere revisión: {summary === null ? '…' : summary.rejected}
       </Text>
 
+      {employeeMsg !== null && (
+        <Text testID="refresh-employees-msg" style={styles.count}>
+          {employeeMsg}
+        </Text>
+      )}
+
       <View style={styles.actions}>
         <Button
           testID="sync-now"
           title="Sincronizar ahora"
           onPress={() => void onSync()}
           disabled={syncing}
+        />
+        <Button
+          testID="refresh-employees"
+          title="Actualizar empleados"
+          onPress={() => void onRefreshEmployees()}
+          disabled={refreshingEmployees}
         />
         <Button testID="back" title="Volver" onPress={() => router.back()} />
       </View>
